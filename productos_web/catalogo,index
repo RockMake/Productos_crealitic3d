@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Catálogo de Productos</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    body {
+      padding: 20px;
+    }
+
+    .product-list {
+      list-style: none;
+      padding: 0;
+    }
+
+    .category-item {
+      cursor: pointer;
+    }
+
+    .subcategory-list {
+      list-style: none;
+      padding-left: 20px;
+    }
+
+    .subcategory-item {
+      cursor: pointer;
+    }
+
+    .product-list-item {
+      margin-left: 40px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Catálogo de Productos</h1>
+
+    <div class="form-group">
+      <label for="categorySelect">Categoría:</label>
+      <select class="form-control" id="categorySelect"></select>
+    </div>
+
+    <div class="form-group">
+      <label for="subcategorySelect">Subcategoría:</label>
+      <select class="form-control" id="subcategorySelect"></select>
+    </div>
+
+    <ul class="product-list" id="productList">
+      <!-- Aquí se mostrarán los productos -->
+    </ul>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.8/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script>
+    // Datos de ejemplo (puedes reemplazarlos con tus propios datos)
+    const data = [
+      {
+        category: "Electrónica",
+        subcategories: ["Smartphones", "Laptops", "Accesorios"],
+        products: ["iPhone", "Samsung Galaxy", "MacBook", "Dell XPS", "Cargador", "Auriculares"]
+      },
+      {
+        category: "Ropa",
+        subcategories: ["Hombres", "Mujeres", "Niños"],
+        products: ["Camisas", "Vestidos", "Pantalones", "Zapatos"]
+      },
+      // Agrega más categorías según sea necesario
+    ];
+
+    // Función para llenar el select de categorías
+    function fillCategories() {
+      const categorySelect = document.getElementById("categorySelect");
+      data.forEach(item => {
+        const option = document.createElement("option");
+        option.text = item.category;
+        categorySelect.add(option);
+      });
+    }
+
+    // Función para llenar el select de subcategorías
+    function fillSubcategories(category) {
+      const subcategorySelect = document.getElementById("subcategorySelect");
+      subcategorySelect.innerHTML = '<option value="">Todas</option>'; // Agrega la opción "Todas"
+      const selectedCategory = data.find(item => item.category === category);
+      if (selectedCategory) {
+        selectedCategory.subcategories.forEach(subcategory => {
+          const option = document.createElement("option");
+          option.text = subcategory;
+          subcategorySelect.add(option);
+        });
+      }
+    }
+
+    // Función para llenar la lista de productos
+    function fillProducts(category, subcategory) {
+      const productList = document.getElementById("productList");
+      productList.innerHTML = ''; // Limpiar la lista
+
+      data.forEach(item => {
+        if (category === "" || item.category === category) {
+          if (subcategory === "" || item.subcategories.includes(subcategory)) {
+            const categoryItem = document.createElement("li");
+            categoryItem.className = "category-item";
+            categoryItem.textContent = item.category;
+            productList.appendChild(categoryItem);
+
+            if (subcategory !== "") {
+              const subcategoryItem = document.createElement("li");
+              subcategoryItem.className = "subcategory-item";
+              subcategoryItem.textContent = subcategory;
+              productList.appendChild(subcategoryItem);
+            }
+
+            item.products.forEach(product => {
+              const productItem = document.createElement("li");
+              productItem.className = "product-list-item";
+              productItem.textContent = product;
+              productList.appendChild(productItem);
+            });
+          }
+        }
+      });
+    }
+
+    // Evento cuando se selecciona una categoría
+    document.getElementById("categorySelect").addEventListener("change", function() {
+      const selectedCategory = this.value;
+      fillSubcategories(selectedCategory);
+      fillProducts(selectedCategory, document.getElementById("subcategorySelect").value);
+    });
+
+    // Evento cuando se selecciona una subcategoría
+    document.getElementById("subcategorySelect").addEventListener("change", function() {
+      const selectedCategory = document.getElementById("categorySelect").value;
+      const selectedSubcategory = this.value;
+      fillProducts(selectedCategory, selectedSubcategory);
+    });
+
+    // Inicializar la página
+    fillCategories();
+    fillSubcategories("");
+    fillProducts("", "");
+  </script>
+</body>
+</html>
